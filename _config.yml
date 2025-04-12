@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Book settings
 # Refernece: https://jupyterbook.org/customize/config.html
-title: Azure Function App Samples
+title: AWS LAmbda Samples
 author: Dynova Development Team
 copyright: "2024"
 logo: https://github.com/dynovaio/open-source-office/blob/master/assets/dynova/dynova-logo-195x64.png?raw=true
