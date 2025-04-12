@@ -1,0 +1,13 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: README.md
+chapters:
+  - file: sample-dotnet8@otel/README.md
+    sections:
+      - file: sample-dotnet8@otel/INSTRUMENTATION.md
+  - file: sample-golang@otel/README.md
+    sections:
+      - file: sample-golang@otel/INSTRUMENTATION.md
+  - file: CODE_OF_CONDUCT.md

@@ -1,0 +1,46 @@
+# -----------------------------------------------------------------------------
+# Book settings
+# Refernece: https://jupyterbook.org/customize/config.html
+title: Azure Function App Samples
+author: Dynova Development Team
+copyright: "2024"
+logo: https://github.com/dynovaio/open-source-office/blob/master/assets/dynova/dynova-logo-195x64.png?raw=true
+only_build_toc_files: true
+exclude_patterns:
+  - _build
+  - _templates
+  - _config.yml
+  - .ipynb_checkpoints
+  - .git
+  - .github
+  - .vscode
+  - .venv
+  - sample-java/target
+  - sample-javascript@aws-lambda@v4/node_modules
+  - sample-typescript@aws-lambda@v3/node_modules
+  - sample-typescript@aws-lambda@v4/node_modules
+
+# -----------------------------------------------------------------------------
+# Repository information
+# Refernece: https://jupyterbook.org/customize/config.html
+repository:
+  url: https://github.com/dynovaio/sample-system-aws-lambda # Online location of your book
+  path_to_book: docs # Optional path to your book, relative to the repository root
+  branch: master # Which branch of the repository should be used when creating links (optional)
+
+# -----------------------------------------------------------------------------
+# Execution settings
+# Reference: https://jupyterbook.org/content/execute.html
+execute:
+  timeout: 100
+  execute_notebooks: "off"
+
+# -----------------------------------------------------------------------------
+# HTML-specific settings
+# See https://jupyterbook.org/customize/config.html
+html:
+  favicon: https://github.com/dynovaio/open-source-office/blob/master/assets/dynova/dynova-favicon-black.png?raw=true
+  use_issues_button: true
+  use_edit_page_button: true
+  use_repository_button: true
+  baseurl: https://dynovaio.gitlab.io/sample-system-aws-lambda

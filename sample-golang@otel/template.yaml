@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  helloworld
+
+  Sample SAM Template for helloworld
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Parameters:
+  NewRelicLicenseKey:
+    Type: String
+    Description: "New Relic License Key"
+  FunctionName:
+    Type: String
+    Description: "Lambda function name (will be used as OTEL_SERVICE_NAME)"
+    Default: "HelloWorldFunction"
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: !Ref FunctionName
+      CodeUri: src/HelloWorld/
+      Handler: HelloWorld
+      Runtime: provided.al2
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          OTEL_TRACES_EXPORTER: otlp
+          OTEL_METRICS_EXPORTER: otlp
+          OTEL_LOGS_EXPORTER: otlp
+          OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
+          NEW_RELIC_LICENSE_KEY: !Ref NewRelicLicenseKey
+          NEW_RELIC_OPENTELEMETRY_ENDPOINT: otlp.nr-data.net:4317
+          OTEL_SERVICE_NAME: !Ref FunctionName
+      Layers:
+        - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:901920570463:layer:aws-otel-collector-amd64-ver-0-115-0:2
+      Events:
+        CatchAll:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /hello
+            Method: GET
+    Metadata:
+      BuildMethod: makefile
+      BuildProperties:
+        IncludePaths:
+          - src/HelloWorld/collector.yaml
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldAPI:
+    Description: "API Gateway endpoint URL for Prod environment for First Function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn

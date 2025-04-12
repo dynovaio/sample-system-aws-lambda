@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for sample-dotnet8
+
+Globals:
+  Function:
+    Timeout: 10
+
+Parameters:
+  NewRelicLicenseKey:
+    Type: String
+    Description: "New Relic License Key"
+  FunctionName:
+    Type: String
+    Description: "Lambda function name (will be used as OTEL_SERVICE_NAME)"
+    Default: "HelloWorldFunction"
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      CodeUri: ./src/HelloWorld/
+      Handler: HelloWorld::HelloWorld.Function::WrappedFunctionHandler
+      Runtime: dotnet8
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          OTEL_TRACES_EXPORTER: otlp
+          OTEL_METRICS_EXPORTER: otlp
+          OTEL_LOGS_EXPORTER: otlp
+          OPENTELEMETRY_COLLECTOR_CONFIG_FILE: /var/task/collector.yaml
+          NEW_RELIC_LICENSE_KEY: !Ref NewRelicLicenseKey
+          NEW_RELIC_OPENTELEMETRY_ENDPOINT: otlp.nr-data.net:4317
+          OTEL_SERVICE_NAME: !Ref FunctionName
+      Layers:
+        - !Sub arn:${AWS::Partition}:lambda:${AWS::Region}:901920570463:layer:aws-otel-collector-amd64-ver-0-115-0:2
+      Events:
+        HelloWorldApi:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: get
+
+Outputs:
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn

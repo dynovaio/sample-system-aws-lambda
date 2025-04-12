@@ -1,0 +1,6 @@
+.*
+!.gitignore
+!.python-version
+!.go-version
+!.github
+_build
